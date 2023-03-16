@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p id="scramble"></p>
+    <h1 id="display">0:00.00</h1>
+    <p id="instruction">Press space to start timer</p>
+  </body>
+  <script>
+    let min = 00;
+    let sec = 00;
+    let tens = 00;
+    let Interval;
+    let is_rolling = false;
+    let is_ready = false;
+    let sec_d, tens_d;
+    let display = document.getElementById("display");
+    let instruction = document.getElementById("instruction");
+    function startTimer() {
+      is_ready = false;
+      is_rolling = true;
+      clearInterval(Interval);
+      min, sec, (tens = 0);
+      display.innerText = "0:00.00";
+      Interval = setInterval(runTimer, 10);
+    }
+    function stopTimer() {
+      setTimeout(() => {
+        is_rolling = false;
+      }, 300);
+      clearInterval(Interval);
+      getNewScramble();
+    }
+    function runTimer() {
+      tens++;
+      if (tens > 99) {
+        sec++;
+        tens = 0;
+      }
+      if (sec > 59) {
+        min++;
+        sec = 0;
+      }
+      displayTimer();
+    }
+    function displayTimer() {
+      min_d = min;
+      sec_d = sec;
+      tens_d = tens;
+      if (tens_d <= 9) {
+        tens_d = "0" + tens_d;
+      }
+      if (sec_d <= 9) {
+        sec_d = "0" + sec_d;
+      }
+      display.innerText = `${min_d}:${sec_d}.${tens_d}`;
+    }
+    window.addEventListener("keydown", (e) => {
+      if (is_rolling) {
+        stopTimer();
+        instruction.style.display = "";
+      }
+      if (e.code === "Space" && !is_rolling) {
+        if (!is_ready) {
+          display.style.color = "#e06c75";
+          setTimeout(() => {
+            display.style.color = "#98c379";
+          }, 300);
+          is_ready = true;
+        }
+      }
+    });
+    window.addEventListener("keyup", (e) => {
+      if (e.code === "Space" && !is_rolling) {
+        display.style.color = "#ffffff";
+        instruction.style.display = "none";
+        startTimer();
+      }
+    });
+  </script>
+  <script>
+    let scramble = document.getElementById("scramble");
+    function getNewScramble() {
+      let s = "";
+      for (
+        a = 25, x = Math.random;
+        a--;
+        s += "RLUDFB"[0 | (x() * 6)] + " '2"[0 | (x() * 3)] + " "
+      );
+      scramble.innerText = s;
+      return s;
+    }
+    getNewScramble();
+  </script>
+  <style>
+    body {
+      background: #282c34;
+      color: #ffffff;
+    }
+    h1#display {
+      font-size: 10vmin;
+      text-align: center;
+      margin-top: 40vh;
+    }
+    p {
+      text-align: center;
+    }
+    p#scramble {
+      font-size: 3vmin;
+    }
+  </style>
+</html>
